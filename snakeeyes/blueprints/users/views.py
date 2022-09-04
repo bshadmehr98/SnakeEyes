@@ -26,21 +26,23 @@ class UsersList(Resource):
             message = "User created"
         else:
             user.regenerate_token()
+            if data["timezone"] != user.timezone:
+                user.timezone = data["timezone"]
+                user.save()
             message = "User token changed"
         response = user.to_mongo()
         response["message"] = message
         return response, 201
 
-    @users.expect(UserDTO)
     @users.marshal_with(UserDTO, code=200, skip_none=True)
     @platform_authorized
     def get(self):
-        data = marshal(api.payload, UserDTO)
         try:
-            user = User.objects.get(email=data["email"], platform=request.platform)
+            users = User.objects(platform=request.platform)
+            print(users)
         except Exception:
             return {"message": "User not found"}, 404
-        return user.to_mongo(), 200
+        return [user.to_mongo() for user in users], 200
 
 
 @users.route("/<string:id>")

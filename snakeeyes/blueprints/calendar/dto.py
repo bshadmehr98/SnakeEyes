@@ -1,3 +1,4 @@
+from xmlrpc.client import Boolean
 from snakeeyes.extentions import api
 from flask_restx import fields
 from snakeeyes.blueprints.dto import GeneralDTO
@@ -24,12 +25,12 @@ UserPlanDTO = api.inherit(
     },
 )
 
-UserPlanValidateRequestDTO = api.inherit(
-    "UserPlanValidateRequest",
+UserEventValidateRequestDTO = api.inherit(
+    "UserEventValidateRequestDTO",
     GeneralDTO,
     {
-        "from_hour": fields.Integer(description="Start"),
-        "to_hour": fields.Integer(description="End"),
+        "start": fields.Integer(description="Start"),
+        "end": fields.Integer(description="End"),
     },
 )
 
@@ -60,5 +61,31 @@ UserRepeatedEventDTO = api.inherit(
         "title": fields.String(required=True, description="Title"),
         "token": fields.String(readonly=True, description="Token"),
         "actions": fields.List(fields.String(), required=True, description="actions"),
+    },
+)
+
+UserEventDTO = api.inherit(
+    "UserEventDTO",
+    GeneralDTO,
+    {
+        "date": fields.DateTime(required=True, description="Date"),
+        "start": fields.DateTime(required=True, description="Start"),
+        "duration": fields.Integer(required=True, description="Duration in seconds"),
+        "title": fields.String(required=True, description="Title"),
+        "token": fields.String(readonly=True, description="Token"),
+        "actions": fields.List(fields.String(), required=True, description="actions"),
+        "type": fields.String(readonly=True, description="Type"),
+    },
+)
+
+EventTemplateDTO = api.inherit(
+    "EventTemplateDTO",
+    GeneralDTO,
+    {
+        "id": fields.String(readonly=True, description="Template id"),
+        "is_active": fields.Boolean(required=True, description="Is Active"),
+        "token": fields.String(readonly=True, description="Token"),
+        "single_events": fields.List(fields.Nested(UserSingleEventDTO), required=False, description="Single Events"),
+        "repeated_events": fields.List(fields.Nested(UserRepeatedEventDTO), required=False, description="Single Events"),
     },
 )

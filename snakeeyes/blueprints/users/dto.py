@@ -6,6 +6,7 @@ UserDTO = api.inherit(
     "User",
     GeneralDTO,
     {
+        "_id": fields.String(readonly=True, description="User id"),
         "email": fields.String(required=True, description="User email"),
         "token": fields.String(readonly=True, description="User token"),
         "timezone": fields.String(required=True, description="User timezone"),

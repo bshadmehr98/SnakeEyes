@@ -29,35 +29,40 @@ services:
       volumes:
         - mongo:/data/db
 
-#  web:
-#    build: .
-#    command: >
-#      gunicorn -b 0.0.0.0:8888
-#      --access-logfile -
-#      --reload
-#      "snakeeyes.app:create_app()"
-#    volumes:
-#      - ".:/snakeeyes"
-#    ports:
-#      - "8888:8888"
-#    env_file:
-#      - '.env'
+  web:
+    build: .
+    command: >
+      gunicorn -b 0.0.0.0:8888
+      --access-logfile -
+      --reload
+      "snakeeyes.app:create_app()"
+    volumes:
+      - ".:/snakeeyes"
+    depends_on:
+      - "db"
+      - "redis"
+    ports:
+      - "8888:8888"
+    env_file:
+      - '.env'
 
-#  redis:
-#    image: 'redis:3.0-alpine'
-#    command: redis-server --requirepass devpassword
-#    volumes:
-#      - 'redis:/var/lib/redis/data'
-#    ports:
-#      - '6379:6379'
-#
-#  celery:
-#    build: .
-#    command: celery worker -l info -A snakeeyes.blueprints.contact.tasks
-#    env_file:
-#      - '.env'
-#    volumes:
-#      - '.:/snakeeyes'
+  redis:
+    image: 'redis:3.0-alpine'
+    command: redis-server --requirepass devpassword
+    volumes:
+      - 'redis:/var/lib/redis/data'
+    ports:
+      - '6379:6379'
+
+  celery:
+    build: .
+    command: celery worker -l info -A snakeeyes.blueprints.contact.tasks
+    env_file:
+      - '.env'
+    depends_on:
+      - "web"
+    volumes:
+      - '.:/snakeeyes'
 
 volumes:
   mongo:

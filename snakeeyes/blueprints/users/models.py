@@ -19,7 +19,7 @@ class User(db.Document):
     email = db.StringField(unique=True)
     username = db.StringField(unique_with="email")
     role = db.StringField(max_length=3, choices=ROLES, default=ROLES_MEMBER)
-    platform = db.ReferenceField(Platform, reverse_delete_rule=queryset.CASCADE)
+    platform = db.ReferenceField(Platform, reverse_delete_rule=queryset.NULLIFY)
     token = db.StringField(required=True)
     active = db.BooleanField(default=True)
     timezone = db.StringField(required=True, default=tz.utc)

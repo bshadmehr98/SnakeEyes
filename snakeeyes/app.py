@@ -4,6 +4,7 @@ from snakeeyes.extentions import db, api
 from snakeeyes.blueprints.users import users  # noqa
 from snakeeyes.blueprints.general import general  # noqa
 from snakeeyes.blueprints.calendar import calendar  # noqa
+from snakeeyes.blueprints import dashboard  # noqa
 import os
 from .signals import register_signals
 

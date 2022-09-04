@@ -106,3 +106,36 @@ class SingleEventAPI(Resource):
         except Exception as e:
             return {"message": e}, 500
         return {"message": "Deleted successfully!"}, 200
+
+    @calendar.marshal_with(UserRepeatedEventDTO, 200, skip_none=True)
+    def patch(self, user_id, event_id):
+        try:
+            events = UserEvents.objects.get(user=ObjectId(user_id))
+        except Exception as e:
+            return {"message": "Events record not found"}, 404
+        data = marshal(api.payload, UserRepeatedEventDTO)
+        for event in events.repeated_events:
+            if event.token == event_id:
+                events.repeated_events.remove(event)
+                if data["start_date"] != None:
+                    event.start_date = data["start_date"]
+                if data["end_date"] != None:
+                    event.end_date = data["end_date"]
+                if data["day_of_week"] != None:
+                    event.day_of_week = data["day_of_week"]
+                if data["day_of_month"] != None:
+                    event.day_of_month = data["day_of_month"]
+                if data["day_of_year"] != None:
+                    event.day_of_year = data["day_of_year"]
+                if data["start_hour"] != None:
+                    event.start_hour = data["start_hour"]
+                if data["duration"] != None:
+                    event.duration = data["duration"]
+                if data["title"] != None:
+                    event.title = data["title"]
+                if data["actions"] != None:
+                    event.actions = [Action(url=a) for a in data["actions"]]
+                events.repeated_events.append(event)
+                events.save()
+                return event, 200
+        return {"message": "Event not found"}, 404

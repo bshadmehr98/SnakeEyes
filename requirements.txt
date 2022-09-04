@@ -48,8 +48,6 @@ pytest-cov==3.0.0
 pytz==2022.1
 redis==4.3.3
 six==1.16.0
-# Editable install with no version control (SnakeEyes-CLI==1.0)
--e /Users/deadman/Projects/TestProj/SnakeEye/src
 SQLAlchemy==1.4.39
 SQLAlchemy-Utils==0.38.2
 tomli==2.0.1
@@ -62,3 +60,8 @@ wrapt==1.14.1
 WTForms==3.0.1
 WTForms-Components==0.10.5
 zipp==3.8.0
+flask_mongoengine
+flask_restx
+bcrypt
+python-dateutil
+pyjwt

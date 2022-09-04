@@ -14,7 +14,6 @@ import bcrypt
 app = create_app()
 db.app = app
 
-
 @click.group()
 def cli():
     """Run MongoDB related tasks."""
@@ -27,7 +26,7 @@ def seed():
         if User.find_by_identity(email) is not None:
             continue
 
-        params = {"role": User.ROLES_ADMIN, "email": email}
+        params = {"role": User.ROLES_ADMIN, "email": email, "timezone": "Asia/Tehran"}
 
         user = User(**params)
         user.save()

@@ -40,7 +40,7 @@ SEED_PLATFORM_NAME = ["myc"]
 
 # Mongo
 MONGODB_DB = "calendar"
-MONGODB_HOST = "localhost"
+MONGODB_HOST = "db"
 MONGODB_PORT = 27017
 MONGODB_USERNAME = "admin"
 MONGODB_PASSWORD = "pass"

@@ -12,7 +12,6 @@ from bson.objectid import ObjectId
 from mongoengine.errors import ValidationError
 from snakeeyes.blueprints.calendar.dto import (
     UserPlanDTO,
-    UserPlanValidateRequestDTO,
     UserSingleEventDTO,
 )
 from snakeeyes.blueprints.calendar.models import UserEvents, UserSingleEvent, Action
@@ -85,6 +84,7 @@ class SingleEventListAPI(Resource):
 @calendar.response(200, "Data updated")
 class SingleEventAPI(Resource):
     @calendar.marshal_with(UserSingleEventDTO, 200, skip_none=True)
+    @platform_authorized
     def get(self, user_id, event_id):
         try:
             events = UserEvents.objects.get(user=ObjectId(user_id))
@@ -97,6 +97,7 @@ class SingleEventAPI(Resource):
         return {"message": "Event not found"}, 404
 
     @calendar.marshal_with(GeneralDTO, 200, skip_none=True)
+    @platform_authorized
     def delete(self, user_id, event_id):
         try:
             UserEvents.objects(user=ObjectId(user_id)).update_one(
@@ -105,3 +106,33 @@ class SingleEventAPI(Resource):
         except Exception as e:
             return {"message": e}, 500
         return {"message": "Deleted successfully!"}, 200
+
+    @calendar.marshal_with(UserSingleEventDTO, 200, skip_none=True)
+    @platform_authorized
+    def patch(self, user_id, event_id):
+        try:
+            events = UserEvents.objects.get(user=ObjectId(user_id))
+        except Exception as e:
+            return {"message": "Events record not found"}, 404
+        if events is not None:
+            event = None
+            data = marshal(api.payload, UserSingleEventDTO)
+            for e in events.single_events:
+                if e.token == event_id:
+                    event = e
+                    events.single_events.remove(e)
+            if event == None:
+                return {"message": "Invalid token ID"}, 404
+            if data["date"] != None:
+                event.date = data["date"]
+            if data["start"] != None:
+                event.start = data["start"]
+            if data["duration"] != None:
+                event.duration = data["duration"]
+            if data["title"] != None:
+                event.title = data["title"]
+            if data["actions"] != None:
+                event.actions = [Action(url=a) for a in data["actions"]]
+            events.single_events.append(event)
+            events.save()
+        return {"message": "Single event updated"}, 200

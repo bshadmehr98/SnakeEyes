@@ -1,7 +1,6 @@
 from snakeeyes.extentions import db
 import uuid
 from mongoengine.queryset.visitor import Q
-import secrets
 import bcrypt
 
 
