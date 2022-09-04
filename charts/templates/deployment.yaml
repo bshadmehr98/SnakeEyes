@@ -35,9 +35,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.fullName }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ include "charts.fullname" . }}-env
+          # envFrom:
+          #   - configMapRef:
+          #       name: {{ include "charts.fullname" . }}-env
           ports:
             - name: http
               containerPort: 8888
