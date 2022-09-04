@@ -33,6 +33,7 @@ deploy-uat:
     entrypoint: [""]
   stage: deploy
   script:
-    - helm --kube-context master-your-courses/snakeeyes:myc -n uat-ns  upgrade -i --create-namespace snakeeyes ./charts -f $UAT_HELM_VALUES --set image.fullName=$CONTAINER_RELEASE_IMAGE
+    - $UAT_INSTANCE_VALUES > instance/settings.py
+    - helm --kube-context master-your-courses/snakeeyes:myc -n uat-ns  upgrade -i --create-namespace snakeeyes ./charts --set image.fullName=$CONTAINER_RELEASE_IMAGE
   only:
     - uat
