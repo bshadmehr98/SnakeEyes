@@ -27,4 +27,7 @@ dependencies:
   - name: mongodb
     version: 13.1.2
     repository: https://charts.bitnami.com/bitnami
+  - name: mongo-express
+    version: 2.6.6
+    repository: https://cowboysysop.github.io/charts
 
