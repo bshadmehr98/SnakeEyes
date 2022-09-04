@@ -25,7 +25,7 @@ appVersion: "1.16.0"
 
 dependencies:
   - name: mongodb
-    version: 13.1.2
+    version: 10.30.12
     repository: https://charts.bitnami.com/bitnami
   - name: mongo-express
     version: 2.6.6
