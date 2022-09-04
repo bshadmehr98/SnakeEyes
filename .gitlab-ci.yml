@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+  - collectstatic
+  - backup
+
+variables:
+  DOCKER_DRIVER: overlay2
+  CONTAINER_RELEASE_IMAGE:  $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA
+  CONTAINER_LATEST_IMAGE:   $CI_REGISTRY_IMAGE:latest
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_TLS_CERTDIR: ""
+  KUBE_CONTEXT: master-your-courses/backend:myc
+  BACKUP_IMAGE: $CI_REGISTRY_IMAGE:backup-$CI_COMMIT_SHA
+
+build-uat:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/devops/prod/Dockerfile"
+      --destination "${CONTAINER_RELEASE_IMAGE}"
+  only:
+    - uat
+
+
+deploy-uat:
+  image:
+    name: alpine/helm:3.2.1
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - helm --kube-context master-your-courses/snakeeyes:myc -n uat-ns  upgrade -i --create-namespace masteryourcourses ./charts -f $UAT_HELM_VALUES --set image.fullName=$CONTAINER_RELEASE_IMAGE
+  only:
+    - uat

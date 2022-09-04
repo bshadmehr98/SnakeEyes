@@ -1,0 +1,77 @@
+mongodb:
+    auth:
+      rootPassword: "123456a"
+      usernames:
+        - snakeeye
+      passwords:
+        - "123456a"
+      databases:
+        - "snakeeye"
+
+
+app:
+  env:
+    DEBUG: 1
+    SECRET_KEY: sample
+    DJANGO_ALLOWED_HOSTS: masteryourcourses.com
+    SQL_ENGINE: django.db.backends.postgresql
+    SQL_PORT: 5432
+    DATABASE: postgres
+    REDIS_URI: redis://redis:6379
+    SERVER_MODE: production
+    BASE_URL: https://masteryourcourses.com
+
+replicaCount: 1
+
+image:
+  fullName: sample
+  repository: sample
+  pullPolicy: Always
+  tag: ""
+
+imagePullSecrets:
+  - name: regcred
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: uat.masteryourcourses.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
