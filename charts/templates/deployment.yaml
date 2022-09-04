@@ -27,15 +27,6 @@ spec:
       serviceAccountName: {{ include "charts.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: {{ .Chart.Name }}-init
-          image: "{{ .Values.image.fullName }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ include "charts.fullname" . }}-env
-          command: ["python3"]
-          args: ["manage.py", "migrate", "--noinput"]
       containers:
         - name: {{ .Chart.Name }}
           command: ["gunicorn"]
